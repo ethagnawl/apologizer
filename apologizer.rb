@@ -6,12 +6,12 @@ Dotenv.load
 
 class ApologizerError < StandardError; end
 
-ACCOUNT_SID = ENV.fetch('ACCOUNT_SID') {
-  raise ApologizerError.new "ACCOUNT_SID is required."
+TWILIO_ACCOUNT_SID = ENV.fetch('TWILIO_ACCOUNT_SID') {
+  raise ApologizerError.new "TWILIO_ACCOUNT_SID is required."
 }
 
-AUTH_TOKEN = ENV.fetch('AUTH_TOKEN') {
-  raise ApologizerError.new "AUTH_TOKEN is required."
+TWILIO_AUTH_TOKEN = ENV.fetch('TWILIO_AUTH_TOKEN') {
+  raise ApologizerError.new "TWILIO_AUTH_TOKEN is required."
 }
 
 FROM_NUMBER = ENV.fetch('FROM_NUMBER') {
@@ -22,8 +22,8 @@ TELEGRAM_TOKEN = ENV.fetch('TELEGRAM_TOKEN') {
   raise ApologizerError.new "TELEGRAM_TOKEN is required."
 }
 
-NUMBERS = ENV.fetch('NUMBERS') {
-            raise ApologizerError.new "NUMBERS are required."
+TO_NUMBERS = ENV.fetch('TO_NUMBERS') {
+            raise ApologizerError.new "TO_NUMBERS are required."
           }.
           split(/,/).
           each_slice(2).
@@ -33,9 +33,9 @@ NUMBERS = ENV.fetch('NUMBERS') {
           }
 
 def apologize(name:)
-  client = Twilio::REST::Client.new ACCOUNT_SID, AUTH_TOKEN
+  client = Twilio::REST::Client.new TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN
   from = FROM_NUMBER
-  to = NUMBERS.fetch(name) {
+  to = TO_NUMBERS.fetch(name) {
     raise ApologizerError.new "#{name}'s phone number could not be found."
   }
   url = "http://twimlets.com/echo?Twiml=%3CResponse%3E%3CSay%3ESorry+#{name}.%3C%2FSay%3E%3C%2FResponse%3E"
